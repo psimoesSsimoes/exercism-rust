@@ -1,25 +1,61 @@
-pub fn nth(n: u32) -> u32 {
+use std::collections::HashMap;
 
-
+struct Sieve {
+	composites: HashMap<u32,Vec<u32>>,
+	current: u32,
 }
 
-fn sieve_of_erasosthenes(number: u32)-> Vec<u32>{
-	let mut vec = Vec::new();
-	let mut np = Vec<bool>::new();
-	vec.push(2);
-	vec.push(3);
-	for i in 3..number {
-		if !boolvec[i]{
-			vec.push(i);
-			let mut y = i*i;
-			while y < number{
-				np[y] = true;
-				y+=1;
-			}
-		}
-		i+=2;
+impl Default for Sieve {
+    fn default() -> Self {
+        Sieve {
+            composites: HashMap::new(),
+            current: 2,
+        }
+    }
+}
+
+impl Sieve {
+    pub fn new() -> Sieve {
+        Default::default()
+    }
+}
+
+impl Iterator for Sieve {
+    type Item = u32;
+
+    fn next(&mut self) -> Option<u32> {
+        fn next_prime(composites: &mut HashMap<u32, Vec<u32>>, x: u32) -> u32 {
+            match composites.get(&x) {
+                Some(numbers) => {
+                    for num in numbers.to_owned() {
+                        composites
+                            .entry(x + num)
+                            .and_modify(|v| v.push(num))
+                            .or_insert_with(|| vec![num]);
+                    }
+                    composites.remove(&x);
+                    next_prime(composites, x + 1)
+                }
+                None => {
+                    composites.insert(x * x, vec![x]);
+                    x
+                }
+            }
+        }
+
+        let prime = next_prime(&mut self.composites, self.current);
+        self.current = prime + 1; // This number will be the next to be tested
+
+        Some(prime)
+    }
+}
+pub fn nth(n: u32) -> u32 {
+	let mut sieve = Sieve::new();
+	let mut result :u32 =sieve.next().unwrap_or(0);
+	for _x in 0..n {
+		result = sieve.next().unwrap_or(0)
 	}
-	vec
+	result
 }
 
 // func sieveOfEratosthenes(m int) []int {
