@@ -1,26 +1,20 @@
-extern crate regex;
-
-use regex::Regex;
-
 pub fn reply(message: &str) -> &str {
-	  let shouting = Regex::new(r"[[:alpha:]]")
-		  .unwrap()
-		  .is_match(message)&&
-		  message == message.to_uppercase();
+	let msg = message.trim_end();
+	if msg.is_empty() {
+		return "Fine. Be that way!"
+	}
 
-	  let question = Regex::new(r"\?\s*\z")
-		  .unwrap()
-		  .is_match(message);
+	let x = msg.to_ascii_lowercase();
+	if msg == msg.to_uppercase() && msg.ends_with("?") && !(msg.to_ascii_uppercase() == x){
+		return "Calm down, I know what I'm doing!"
+	}
+	if msg.ends_with("?"){
+		return "Sure."
+	}
+	if msg == msg.to_uppercase() && !(msg.to_ascii_uppercase() == x)  {
+		return "Whoa, chill out!"
+	}
 
-	  let silence  = !Regex::new(r"\S")
-		  .unwrap()
-		  .is_match(message);
-
-    match (shouting, question, silence) {
-        (_,    _,    true) => &"Fine. Be that way!",
-        (true, true, _   ) => &"Calm down, I know what I'm doing!",
-        (_,    true, _   ) => &"Sure.",
-        (true, _,    _   ) => &"Whoa, chill out!",
-        _                  => &"Whatever.",
-    }
+	"Whatever."
 }
+
