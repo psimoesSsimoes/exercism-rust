@@ -2,8 +2,12 @@ pub fn abbreviate(phrase: &str) -> String {
     let mut result = String::new();
     let mut flag = false;
     let mut last_char: char = ' ';
-    let p = phrase.replace("-", " ");
-    for ch in p.chars() {
+
+    for mut ch in phrase.chars() {
+        if ch == '-' {
+            ch = ' ';
+        }
+
         if ch.is_whitespace() {
             flag = false;
         }
@@ -14,6 +18,7 @@ pub fn abbreviate(phrase: &str) -> String {
             flag = true;
             result.push(ch.to_ascii_uppercase())
         }
+
         last_char = ch;
     }
     result
