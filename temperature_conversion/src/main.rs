@@ -40,5 +40,5 @@ fn main() {
 
 	let celcius: f32 = value.parse().unwrap();
 
-    println!("{:?}", (celcius * 9 as f32 / 5 as f32)+ 32 as f32);
+    println!("{:.2}", (celcius * 9 as f32 / 5 as f32)+ 32 as f32);
 }
